@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StudyMate AI — Personal AI Study Companion & Active Recall Platform</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Modular CSS Modules -->
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/chat.css">
+  <link rel="stylesheet" href="/css/quiz.css">
+
+  <link rel="stylesheet" href="/css/widgets.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="/" class="brand">
+          <div class="brand-icon">
+            <svg class="study-logo" viewBox="0 0 64 64" aria-hidden="true">
+              <path class="logo-main" d="M7 15 C15 11 23 12 32 17 V53 C23 48 15 47 7 51 Z"/>
+              <path class="logo-main" d="M57 15 C49 11 41 12 32 17 V53 C41 48 49 47 57 51 Z"/>
+              <path class="logo-center" d="M32 17 V53"/>
+              <path class="logo-page" d="M11 19 C17 17 23 18 28 21"/>
+              <path class="logo-page" d="M53 19 C47 17 41 18 36 21"/>
+              <path class="logo-page" d="M11 47 C17 44 23 45 28 48"/>
+              <path class="logo-page" d="M53 47 C47 44 41 45 36 48"/>
+            </svg>
+          </div>
+          <span class="brand-title">StudyMate AI</span>
+        </a>
+      </div>
+
+      <!-- Core Views Navigation -->
+      <nav class="nav-section">
+        <button class="nav-item active" data-view="chat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+          <span>Tutor & Notes</span>
+        </button>
+
+        <button class="nav-item" data-view="quiz">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polygon points="12 8 8 12 12 16 16 12 12 8"/>
+          </svg>
+          <span>Practice Quizzes</span>
+        </button>
+
+
+
+        <button class="nav-item" id="vaultTriggerBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+          <span>Mistake Vault</span>
+        </button>
+      </nav>
+
+      <!-- Sessions List -->
+      <div class="sessions-wrapper">
+        <div class="sessions-label">
+          <span>Study Sessions</span>
+        </div>
+
+        <button class="new-session-btn" id="newSessionBtn">
+          <span>＋</span> New Study Session
+        </button>
+
+        <div class="session-list" id="sessionsList">
+          <!-- Populated by app.js -->
+        </div>
+      </div>
+
+      <!-- User Profile Card -->
+      <div class="sidebar-footer">
+        <button class="user-profile-btn" id="profileModalBtn" title="Customize Personal Tutor">
+          <div class="avatar user-avatar-display">S</div>
+          <div class="user-info">
+            <span class="user-name user-name-display">Student</span>
+            <span class="user-role user-role-display">Undergrad • Computer Science</span>
+          </div>
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT STAGE -->
+    <main class="main-stage">
+      
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <span class="active-title" id="activeViewTitle">Tutor & Study Notes</span>
+        </div>
+
+        <div class="topbar-right">
+          <!-- Theme Toggle -->
+          <button class="icon-btn" id="themeToggleBtn" title="Toggle Light/Dark Theme">
+            <svg id="themeToggleIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- ================= VIEW 1: CHAT & STUDY NOTES ================= -->
+      <section class="view-container active-view" id="chatView">
+        <div class="chat-scroll-area" id="chatScrollArea">
+          <div class="chat-max-width">
+            
+            <!-- Welcome Hero -->
+            <div class="welcome-hero" id="welcomeHero">
+              <div class="welcome-icon-box">
+                <svg class="study-logo" viewBox="0 0 64 64" aria-hidden="true">
+                  <path class="logo-main" d="M7 15 C15 11 23 12 32 17 V53 C23 48 15 47 7 51 Z"/>
+                  <path class="logo-main" d="M57 15 C49 11 41 12 32 17 V53 C41 48 49 47 57 51 Z"/>
+                  <path class="logo-center" d="M32 17 V53"/>
+                  <path class="logo-page" d="M11 19 C17 17 23 18 28 21"/>
+                  <path class="logo-page" d="M53 19 C47 17 41 18 36 21"/>
+                  <path class="logo-page" d="M11 47 C17 44 23 45 28 48"/>
+                  <path class="logo-page" d="M53 47 C47 44 41 45 36 48"/>
+                </svg>
+              </div>
+              <h1>What are we mastering today, <span class="user-name-display">Student</span>?</h1>
+              <p>Your personalized study tutor with conversational memory, document intelligence, and interactive active recall quizzes.</p>
+
+              <div class="quick-starters-grid">
+                <div class="starter-card" onclick="ChatController.appendMessage('user', 'Explain Dijkstra algorithm simply with a real-world GPS analogy'); ChatController.handleSubmit();">
+                  <strong>💡 Intuitive Concept Breakdown</strong>
+                  <span>Break down complex ideas with the Feynman technique</span>
+                </div>
+                <div class="starter-card" onclick="ChatController.appendMessage('user', 'Create high-yield exam preparation notes on Dynamic Programming'); ChatController.handleSubmit();">
+                  <strong>📝 Exam-Ready Notes</strong>
+                  <span>Structured definitions, formulas, and common exam traps</span>
+                </div>
+                <div class="starter-card" onclick="App.switchView('quiz')">
+                  <strong>🧪 Interactive Quiz</strong>
+                  <span>Test active recall with instant feedback & explanations</span>
+                </div>
+                <div class="starter-card" onclick="ChatController.appendMessage('user', 'Summarize and compare the key differences between these two concepts'); ChatController.handleSubmit();">
+                  <strong>🔍 Compare & Contrast</strong>
+                  <span>Build deep understanding by comparing related concepts side-by-side</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Messages List -->
+            <div id="chatMessagesList" style="display:flex; flex-direction:column; gap:20px;"></div>
+
+          </div>
+        </div>
+
+        <!-- Composer Section -->
+        <div class="composer-wrapper">
+          <div class="composer-container">
+            <!-- Attachment bar -->
+            <div class="attachment-preview-bar" id="attachmentBar">
+              <div class="attachment-chip">
+                <span>📎</span>
+                <span id="attachmentName">file.pdf</span>
+                <button type="button" class="remove-chip-btn" id="removeAttachmentBtn">×</button>
+              </div>
+            </div>
+
+            <form id="chatComposerForm">
+              <textarea 
+                id="chatInput" 
+                class="composer-textarea" 
+                rows="1" 
+                placeholder="Ask your tutor anything, or attach notes/PDFs... (Shift+Enter for newline)"
+              ></textarea>
+
+              <div class="composer-controls">
+                <div class="controls-left">
+                  <!-- Mode Selector -->
+                  <select id="modeSelect" class="mode-select-pill" title="Study Mode">
+                    <option value="notes">📝 Structured Notes</option>
+                    <option value="summary">📌 Quick Summary</option>
+                    <option value="questions">❓ Exam Questions</option>
+                    <option value="mcq">🧪 MCQ Practice</option>
+                    <option value="simple">🧠 Explain Simply (Feynman)</option>
+                  </select>
+
+                  <!-- Attachment Trigger -->
+                  <button type="button" class="attach-trigger" id="attachFileTrigger" title="Attach PDF, Word doc, slides, or image">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.82-2.82l8.49-8.48"/>
+                    </svg>
+                  </button>
+
+                  <input type="file" id="universalFileInput" class="hidden" accept=".pdf,.docx,.txt,.pptx,image/png,image/jpeg,image/webp">
+                </div>
+
+                <button type="submit" class="send-action-btn" id="sendChatBtn" title="Send Message">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="22" y1="2" x2="11" y2="13"/>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                  </svg>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Quick Prompts Pill Bar -->
+          <div class="quick-prompts-bar">
+            <button class="quick-pill" data-prompt="Explain this topic step-by-step">Step-by-step breakdown</button>
+            <button class="quick-pill" data-prompt="Give me 3 common exam pitfalls for this topic">Exam pitfalls & traps</button>
+            <button class="quick-pill" data-prompt="Create a quick cheat sheet with key formulas and definitions">Formula cheat sheet</button>
+            <button class="quick-pill" data-prompt="Give me 2 real-world application examples">Real-world applications</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= VIEW 2: ACTIVE RECALL QUIZZES ================= -->
+      <section class="view-container" id="quizView">
+        <div class="quiz-view">
+          <div class="quiz-wrapper">
+            
+            <!-- Launcher Card -->
+            <div class="quiz-launcher-card" id="quizLauncherCard">
+              <div class="launcher-header">
+                <h2>🧪 Interactive Active Recall Quiz</h2>
+                <p>Test your conceptual understanding with AI-generated multiple-choice questions, instant explanations, and automatic logging of weak concepts.</p>
+              </div>
+
+              <div class="quiz-form-group">
+                <label for="quizTopicInput">Topic or Chapter</label>
+                <input type="text" id="quizTopicInput" class="quiz-input" placeholder="e.g., Photosynthesis, Operating Systems, Sorting Algorithms...">
+              </div>
+
+              <div class="quiz-options-row">
+                <div class="quiz-form-group" style="flex:1;">
+                  <label for="quizCountSelect">Number of Questions</label>
+                  <select id="quizCountSelect" class="quiz-select">
+                    <option value="5" selected>5 Questions (Quick Check)</option>
+                    <option value="10">10 Questions (Standard Quiz)</option>
+                    <option value="15">15 Questions (Deep Exam Prep)</option>
+                  </select>
+                </div>
+
+                <div class="quiz-form-group" style="flex:1;">
+                  <label for="quizDiffSelect">Difficulty Level</label>
+                  <select id="quizDiffSelect" class="quiz-select">
+                    <option value="mixed" selected>Balanced (Easy to Hard)</option>
+                    <option value="conceptual">Conceptual & Theory</option>
+                    <option value="challenging">Advanced & Exam Traps</option>
+                  </select>
+                </div>
+              </div>
+
+              <button class="btn-primary" id="startQuizBtn">
+                <span>Start Active Recall Quiz</span>
+              </button>
+            </div>
+
+            <!-- Active Quiz Runner -->
+            <div class="quiz-active-container hidden" id="quizActiveContainer">
+              <!-- Progress Track -->
+              <div class="quiz-progress-bar-wrap">
+                <div class="progress-track">
+                  <div class="progress-fill" id="quizProgressFill" style="width: 20%;"></div>
+                </div>
+                <span class="progress-label" id="quizProgressText">Question 1 of 5</span>
+              </div>
+
+              <!-- Question Card -->
+              <div class="question-card">
+                <div class="question-header">
+                  <span class="question-difficulty-tag" id="quizDiffBadge">Medium</span>
+                </div>
+                <h3 class="question-text" id="quizQuestionText">Loading question...</h3>
+
+                <!-- Options -->
+                <div class="options-stack" id="quizOptionsStack">
+                  <!-- Rendered dynamically -->
+                </div>
+
+                <!-- Instant Explanation Callout -->
+                <div class="explanation-callout" id="quizExplanationBox">
+                  <strong>💡 Concept Explanation:</strong>
+                  <span id="quizExplanationText"></span>
+                </div>
+
+                <div class="quiz-controls-row">
+                  <button class="btn-primary" id="nextQuestionBtn" disabled>Next Question →</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Scorecard Summary -->
+            <div class="scorecard-card hidden" id="quizScorecard">
+              <div class="score-circle">
+                <div id="scoreCircleVal">8/10</div>
+                <span>Score</span>
+              </div>
+              <h2 class="score-headline" id="scoreHeadline">80% Accuracy</h2>
+              <p class="score-summary-p" id="scoreSummaryP">Great job! Any missed concepts have been automatically logged to your Mistake Vault.</p>
+              
+              <div class="scorecard-actions">
+                <button class="btn-primary" id="restartQuizBtn">Take Another Quiz</button>
+                <button class="nav-item" onclick="ProfileManager.openVaultDrawer()" style="width:auto; padding:10px 18px; border:1px solid var(--border);">Open Mistake Vault</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+
+
+    </main>
+  </div>
+
+  <!-- ================= WIDGETS & MODALS ================= -->
+
+
+
+  <!-- 2. Personalization & Profile Modal -->
+  <div class="modal-overlay" id="profileModal">
+    <div class="modal-content-card">
+      <div class="modal-header">
+        <h3>Customize Personal Tutor</h3>
+        <button class="close-modal-btn" id="closeProfileModal">×</button>
+      </div>
+      <p style="font-size:13px; color:var(--text-muted); margin-top:-10px;">
+        StudyMate AI personalizes explanations, rigor, and analogies to match your exact academic level and learning persona.
+      </p>
+
+      <form id="profileForm" class="profile-form-grid">
+        <div class="form-group">
+          <label for="profileNameInput">Your Name</label>
+          <input type="text" id="profileNameInput" required>
+        </div>
+
+        <div class="form-group">
+          <label for="profileEmailInput">Email (used to sync your memory across devices)</label>
+          <input type="email" id="profileEmailInput" required>
+        </div>
+
+        <div style="display:flex; gap:12px;">
+          <div class="form-group" style="flex:1;">
+            <label for="profileLevelSelect">Education Level</label>
+            <select id="profileLevelSelect">
+              <option value="High School">High School</option>
+              <option value="Undergraduate" selected>Undergraduate</option>
+              <option value="Graduate / Master">Graduate / Master</option>
+              <option value="PhD / Researcher">PhD / Researcher</option>
+              <option value="Medical / Nursing">Medical / Nursing</option>
+              <option value="Law Student">Law Student</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="flex:1;">
+            <label for="profileMajorInput">Major / Subject</label>
+            <input type="text" id="profileMajorInput" placeholder="e.g. Computer Science, Pre-Med">
+          </div>
+        </div>
+
+        <div style="display:flex; gap:12px;">
+          <div class="form-group" style="flex:1;">
+            <label for="profileExamInput">Target Exam / Goal</label>
+            <input type="text" id="profileExamInput" placeholder="e.g. Finals, MCAT, GRE, SAT">
+          </div>
+
+          <div class="form-group" style="flex:1;">
+            <label for="profileDateInput">Exam Date (optional)</label>
+            <input type="date" id="profileDateInput">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="profileStyleSelect">Preferred Learning Style</label>
+          <select id="profileStyleSelect">
+            <option value="Intuitive & Visual" selected>Intuitive & Visual (Feynman analogies & diagrams)</option>
+            <option value="Rigorous & Academic">Rigorous & Academic (Formal proofs & scholarly definitions)</option>
+            <option value="Step-by-Step Problem Solving">Step-by-Step Problem Solving (Formulas & worked examples)</option>
+            <option value="High-Yield Exam Cramming">High-Yield Exam Cramming (Bullet points & exam traps)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="profilePersonaSelect">AI Tutor Persona</label>
+          <select id="profilePersonaSelect">
+            <option value="Explanatory Tutor" selected>Explanatory Tutor (Clear, patient, structured breakdowns)</option>
+            <option value="Socratic Mentor">Socratic Mentor (Guides with hints, doesn't give away answers)</option>
+            <option value="Strict Exam Grader">Strict Exam Grader (Rigorous examiner grading mark schemes)</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn-primary" style="margin-top:8px;">Save Tutor Preferences</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. New Session Type Modal -->
+  <div class="modal-overlay" id="newSessionModal">
+    <div class="modal-content-card">
+      <div class="modal-header">
+        <h3>Start New Study Session</h3>
+        <button class="close-modal-btn" id="closeSessionModal">×</button>
+      </div>
+      <p style="font-size:13px; color:var(--text-muted); margin-top:-10px;">
+        Choose the study focus for this session to adjust tutor guidance:
+      </p>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+        <div class="starter-card session-type-card" data-type="Free Study">
+          <strong>📖 Free Study</strong>
+          <span>Explore and ask anything freely</span>
+        </div>
+        <div class="starter-card session-type-card" data-type="Exam Preparation">
+          <strong>🎯 Exam Preparation</strong>
+          <span>High-yield topics & mark schemes</span>
+        </div>
+        <div class="starter-card session-type-card" data-type="Quick Revision">
+          <strong>⚡ Quick Revision</strong>
+          <span>Rapid summary & concept comparison</span>
+        </div>
+        <div class="starter-card session-type-card" data-type="Concept Deep Dive">
+          <strong>🔬 Concept Deep Dive</strong>
+          <span>Master underlying foundational theory</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Slide-over Mistake Vault Drawer -->
+  <div class="vault-drawer" id="vaultDrawer">
+    <div class="vault-header">
+      <h3>
+        <span>⭐</span> Student Mistake Vault
+      </h3>
+      <button class="close-modal-btn" id="closeVaultBtn">×</button>
+    </div>
+    <p style="padding: 12px 20px 0; font-size:12px; color:var(--text-muted);">
+      Concepts and questions you missed during active recall quizzes. StudyMate injects these during revision sessions to close learning gaps.
+    </p>
+    <div class="vault-list" id="vaultList">
+      <!-- Populated dynamically -->
+    </div>
+  </div>
+
+  <!-- JavaScript Modules -->
+  <script src="/js/api.js"></script>
+  <script src="/js/profile.js"></script>
+  <script src="/js/marked.min.js"></script>
+  <script src="/js/chat.js"></script>
+  <script src="/js/quiz.js"></script>
+  <script src="/js/app.js"></script>
+
+</body>
+</html>
