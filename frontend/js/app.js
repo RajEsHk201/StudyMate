@@ -19,6 +19,7 @@ const App = {
     ProfileManager.init();
     ChatController.init();
     QuizController.init();
+    FocusTimer.init();
 
     this.loadSessions();
   },
@@ -233,6 +234,7 @@ window.App = App;
 window.ProfileManager = ProfileManager;
 window.ChatController = ChatController;
 window.QuizController = QuizController;
+window.FocusTimer = FocusTimer;
 
 document.addEventListener("DOMContentLoaded", () => {
   App.init();
