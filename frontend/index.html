@@ -16,8 +16,17 @@
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/chat.css">
     <link rel="stylesheet" href="/css/quiz.css">
-
     <link rel="stylesheet" href="/css/widgets.css">
+
+    <!-- Mermaid.js for Visual Flowcharts & Mind Maps -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            if (typeof mermaid !== "undefined") {
+                mermaid.initialize({ startOnLoad: false, theme: 'neutral', securityLevel: 'loose' });
+            }
+        });
+    </script>
 </head>
 
 <body>
@@ -62,7 +71,25 @@
                     <span>Practice Quizzes</span>
                 </button>
 
+                <button class="nav-item" data-view="flashcards">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <rect x="2" y="7" width="20" height="14" rx="2" />
+                        <path d="M16 3H8" />
+                    </svg>
+                    <span>SRS Flashcards</span>
+                </button>
 
+                <button class="nav-item" data-view="planner">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                        <line x1="16" y1="2" x2="16" y2="6" />
+                        <line x1="8" y1="2" x2="8" y2="6" />
+                        <line x1="3" y1="10" x2="21" y2="10" />
+                    </svg>
+                    <span>Study Planner & Mocks</span>
+                </button>
 
                 <button class="nav-item" id="vaultTriggerBtn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -358,9 +385,262 @@
 
                     </div>
                 </div>
+            <!-- ================= VIEW 3: SPACED REPETITION FLASHCARDS ================= -->
+            <section class="view-container" id="flashcardsView">
+                <div class="flashcards-view">
+                    <div class="flashcards-wrapper">
+
+                        <!-- Deck Library Section -->
+                        <div class="deck-library-section" id="deckLibrarySection">
+                            <!-- Deck Creator Card -->
+                            <div class="deck-creator-card">
+                                <div class="creator-header">
+                                    <h2>🎴 Spaced Repetition Flashcard Studio</h2>
+                                    <p>SuperMemo SM-2 memory retention engine. Automatically schedules cards at optimal intervals based on your active recall performance.</p>
+                                </div>
+
+                                <div class="quiz-options-row" style="margin-top: 14px;">
+                                    <div class="quiz-form-group" style="flex: 2;">
+                                        <label for="deckTopicInput">Deck Subject or Concept</label>
+                                        <input type="text" id="deckTopicInput" class="quiz-input"
+                                            placeholder="e.g. Operating Systems Deadlocks, Organic Chemistry Reagents...">
+                                    </div>
+
+                                    <div class="quiz-form-group" style="flex: 1;">
+                                        <label for="deckCountSelect">Number of Cards</label>
+                                        <select id="deckCountSelect" class="quiz-select">
+                                            <option value="6">6 Flashcards</option>
+                                            <option value="10" selected>10 Flashcards</option>
+                                            <option value="16">16 Flashcards</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <button class="btn-primary" id="createDeckBtn" style="margin-top: 12px;">
+                                    <span>Generate Active-Recall Deck with AI</span>
+                                </button>
+                            </div>
+
+                            <!-- Decks Grid -->
+                            <div class="deck-library-header">
+                                <h3>Saved Flashcard Decks</h3>
+                            </div>
+                            <div class="deck-grid" id="deckLibraryGrid">
+                                <!-- Populated dynamically by flashcards.js -->
+                            </div>
+                        </div>
+
+                        <!-- Active Flashcard Study Stage -->
+                        <div class="flashcard-stage hidden" id="flashcardActiveStage">
+                            <div class="stage-topbar">
+                                <button class="btn-secondary back-btn" id="backToDecksBtn">← Back to Decks</button>
+                                <h3 id="activeDeckTitle">Deck Title</h3>
+                                <button class="btn-secondary export-btn" id="exportAnkiBtn" title="Download ready-to-import Anki CSV">
+                                    📥 Export Anki
+                                </button>
+                            </div>
+
+                            <!-- Progress Track -->
+                            <div class="quiz-progress-bar-wrap">
+                                <div class="progress-track">
+                                    <div class="progress-fill" id="deckProgressFill" style="width: 20%;"></div>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; margin-top:4px;">
+                                    <span class="progress-label" id="deckProgressText">Card 1 of 10</span>
+                                    <span class="progress-label" id="cardIntervalBadge">New Card</span>
+                                </div>
+                            </div>
+
+                            <!-- 3D Flip Card -->
+                            <div class="flashcard-3d-wrap" id="flashcard3D" title="Click or press Space to flip card">
+                                <div class="flashcard-inner">
+                                    <!-- FRONT -->
+                                    <div class="flashcard-face flashcard-front">
+                                        <span class="card-badge" id="cardTagBadge">Concept</span>
+                                        <div class="card-text" id="cardFrontText">Front text...</div>
+                                        <div class="card-hint-trigger">
+                                            <span>Click or press <strong>Space</strong> to reveal answer</span>
+                                            <button type="button" class="hint-pill-btn" id="cardHintBtn">💡 Hint</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- BACK -->
+                                    <div class="flashcard-face flashcard-back">
+                                        <span class="card-badge" style="background:var(--accent-primary-soft); color:var(--text-main);">Answer & Breakdown</span>
+                                        <div class="card-text" id="cardBackText">Back text...</div>
+                                        <div class="card-hint-box hidden" id="cardHintBox">
+                                            <strong>💡 Mnemonic / Clue:</strong>
+                                            <span id="cardHintText"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- SRS Rating Toolbar -->
+                            <div class="srs-actions-card">
+                                <div class="srs-label">How well did you recall this concept?</div>
+                                <div class="srs-button-group">
+                                    <button class="srs-rate-btn rate-again" data-quality="0" title="Forgot / Blackout (Keyboard: 1 or A)">
+                                        <span class="rate-icon">🔄</span>
+                                        <span class="rate-name">Again</span>
+                                        <span class="rate-time">&lt; 1 min</span>
+                                    </button>
+                                    <button class="srs-rate-btn rate-hard" data-quality="3" title="Recalled with high effort (Keyboard: 2 or H)">
+                                        <span class="rate-icon">⚡</span>
+                                        <span class="rate-name">Hard</span>
+                                        <span class="rate-time">1 day</span>
+                                    </button>
+                                    <button class="srs-rate-btn rate-good" data-quality="4" title="Good recall (Keyboard: 3 or G)">
+                                        <span class="rate-icon">👍</span>
+                                        <span class="rate-name">Good</span>
+                                        <span class="rate-time">6 days</span>
+                                    </button>
+                                    <button class="srs-rate-btn rate-easy" data-quality="5" title="Instant / Perfect recall (Keyboard: 4 or E)">
+                                        <span class="rate-icon">🌟</span>
+                                        <span class="rate-name">Easy</span>
+                                        <span class="rate-time">4+ days</span>
+                                    </button>
+                                </div>
+                                <div class="keyboard-shortcuts-strip">
+                                    <span>⌨️ Keyboard: <code>Space</code> Flip • <code>1-4</code> Rate • <code>H</code> Hint</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Review Completed Card -->
+                        <div class="scorecard-card hidden" id="deckCompletedCard">
+                            <div class="score-circle">
+                                <div>🎴</div>
+                                <span>Done</span>
+                            </div>
+                            <h2 class="score-headline">Spaced Repetition Review Complete!</h2>
+                            <p class="score-summary-p">
+                                Great work on active recall! StudyMate's SM-2 algorithm has updated your memory intervals for these cards.
+                            </p>
+                            <div class="scorecard-actions">
+                                <button class="btn-primary" onclick="FlashcardsController.showDeckLibrary()">Back to Deck Library</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
             </section>
 
+            <!-- ================= VIEW 4: AI STUDY PLANNER & MOCK EXAMS ================= -->
+            <section class="view-container" id="plannerView">
+                <div class="planner-view">
+                    <div class="planner-wrapper">
 
+                        <!-- Live Countdown Card -->
+                        <div class="planner-countdown-card">
+                            <div class="countdown-content">
+                                <span class="countdown-badge">⏳ Live Exam Countdown</span>
+                                <h2 id="plannerExamTitle">Final Exams</h2>
+                                <div class="countdown-time-digits" id="plannerCountdownVal">45 Days</div>
+                                <p id="plannerCountdownSub">Calculating remaining study runway...</p>
+                            </div>
+                        </div>
+
+                        <!-- Phased Roadmap Generator & Display -->
+                        <div class="quiz-launcher-card" style="margin-top: 10px;">
+                            <div class="launcher-header">
+                                <h2>📅 AI Revision Roadmap & Phased Milestones</h2>
+                                <p>Generate a customized, multi-week study timeline tailored to your target exam date, major, and daily study capacity.</p>
+                            </div>
+
+                            <div class="quiz-options-row">
+                                <div class="quiz-form-group" style="flex: 1.5;">
+                                    <label for="planTargetInput">Target Exam / Goal</label>
+                                    <input type="text" id="planTargetInput" class="quiz-input" placeholder="e.g. Semester Finals, MCAT, GRE, Midterms">
+                                </div>
+                                <div class="quiz-form-group" style="flex: 1;">
+                                    <label for="planDateInput">Exam Date</label>
+                                    <input type="date" id="planDateInput" class="quiz-input">
+                                </div>
+                            </div>
+
+                            <div class="quiz-options-row">
+                                <div class="quiz-form-group" style="flex: 2;">
+                                    <label for="planSubjectsInput">Key Syllabus / High-Yield Topics</label>
+                                    <input type="text" id="planSubjectsInput" class="quiz-input" placeholder="e.g. Algorithms, Data Structures, System Design">
+                                </div>
+                                <div class="quiz-form-group" style="flex: 1;">
+                                    <label for="planHoursSelect">Daily Study Time</label>
+                                    <select id="planHoursSelect" class="quiz-select">
+                                        <option value="2">2 Hours / Day</option>
+                                        <option value="3" selected>3 Hours / Day</option>
+                                        <option value="5">5 Hours / Day (Intensive)</option>
+                                        <option value="7">7+ Hours / Day (Cramming)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <button class="btn-primary" id="generatePlanBtn">
+                                <span>Generate Phased AI Study Plan</span>
+                            </button>
+                        </div>
+
+                        <!-- Generated Plan Results -->
+                        <div class="planner-roadmap-container" id="plannerResultsArea">
+                            <h3 id="planHeadline" style="font-size:18px; font-weight:800; margin-top:10px;">Personalized Revision Roadmap</h3>
+                            <p id="planDailyStrategy" style="font-size:13.5px; color:var(--text-muted); line-height:1.5; margin-top:4px;"></p>
+
+                            <div class="phases-grid" id="planPhasesContainer">
+                                <!-- Populated dynamically by planner.js -->
+                            </div>
+
+                            <div class="high-yield-tips-wrap" style="margin-top: 14px;">
+                                <h4 style="font-size:14px; font-weight:700; margin-bottom:8px;">💡 High-Yield Retention Strategies</h4>
+                                <div class="tips-grid" id="planTipsList">
+                                    <!-- Populated dynamically -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr style="border:none; border-top:1px solid var(--border); margin: 24px 0;">
+
+                        <!-- Mock Exam Paper Generator Section -->
+                        <div class="quiz-launcher-card" id="mockExamLauncher">
+                            <div class="launcher-header">
+                                <h2>📑 AI Practice Exam & Mock Paper Generator</h2>
+                                <p>Generate full, rigorous mock examination papers (Section A: MCQs, Section B: Conceptual Short Answers, Section C: Deep Application Problems + Complete Model Solutions) ready to print or export as PDF.</p>
+                            </div>
+
+                            <div class="quiz-options-row">
+                                <div class="quiz-form-group" style="flex: 2;">
+                                    <label for="mockExamTopicInput">Exam Subject / Topic</label>
+                                    <input type="text" id="mockExamTopicInput" class="quiz-input" placeholder="e.g. Distributed Systems, Molecular Genetics, Macroeconomics">
+                                </div>
+                                <div class="quiz-form-group" style="flex: 1;">
+                                    <label for="mockExamDurationSelect">Time Allowed</label>
+                                    <select id="mockExamDurationSelect" class="quiz-select">
+                                        <option value="45">45 Minutes (Quick Test)</option>
+                                        <option value="60" selected>60 Minutes (Standard)</option>
+                                        <option value="90">90 Minutes (Comprehensive)</option>
+                                        <option value="120">120 Minutes (Full Exam)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <button class="btn-primary" id="generateMockExamBtn">
+                                <span>Generate Complete Mock Exam Paper</span>
+                            </button>
+                        </div>
+
+                        <!-- Printable Mock Exam Paper View -->
+                        <div class="mock-paper-card hidden" id="mockExamPaperContainer">
+                            <div class="paper-actions-bar">
+                                <button class="btn-secondary" id="newMockExamBtn">← Generate Another Paper</button>
+                                <button class="btn-primary" id="printMockExamBtn">🖨️ Print / Save as PDF</button>
+                            </div>
+                            <div class="mock-paper-sheet printable-content" id="mockExamPaperBody">
+                                <!-- Rendered exam markdown -->
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
 
         </main>
     </div>
@@ -550,6 +830,8 @@
     <script src="/js/marked.min.js"></script>
     <script src="/js/chat.js"></script>
     <script src="/js/quiz.js"></script>
+    <script src="/js/flashcards.js"></script>
+    <script src="/js/planner.js"></script>
     <script src="/js/timer.js"></script>
     <script src="/js/app.js"></script>
 

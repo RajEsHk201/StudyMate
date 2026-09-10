@@ -101,6 +101,11 @@ def run_tests():
     assert res.status_code == 200
     print("✅ GET /api/memory/vault retrieved mistake store")
 
+    # 7. Test Flashcards Decks API
+    res = client.get("/api/flashcards/decks?user_email=test_student@example.com")
+    assert res.status_code == 200
+    print("✅ GET /api/flashcards/decks retrieved deck library")
+
     print("\n🎉 ALL TESTS PASSED SUCCESSFULLY!")
 
 if __name__ == "__main__":

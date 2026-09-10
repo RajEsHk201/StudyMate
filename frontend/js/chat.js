@@ -29,9 +29,17 @@ const ChatController = {
         return `<div class="table-wrap"><table><thead>${header}</thead><tbody>${body}</tbody></table></div>`;
       };
 
-      // Code blocks with copy button and language label
+      // Code blocks with copy button and language label (or Mermaid diagram)
       renderer.code = function(code, lang) {
-        const language = lang || "";
+        const language = (lang || "").toLowerCase().trim();
+        if (language === "mermaid") {
+          const id = "mermaid-" + Math.random().toString(36).substring(2, 9);
+          return `<div class="mermaid-diagram-wrap">
+            <div class="mermaid-diagram-header"><span>📊 Concept Diagram / Mind Map</span></div>
+            <pre class="mermaid" id="${id}">${code}</pre>
+          </div>`;
+        }
+
         const langLabel = language ? `<span class="code-lang-label">${language}</span>` : "";
         const escapedCode = code.replace(/</g, "&lt;").replace(/>/g, "&gt;");
         return `<div class="code-block-wrap">
@@ -237,6 +245,14 @@ const ChatController = {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
           Quiz
         </button>
+        <button class="msg-action-btn" onclick="ChatController.flashcardsFromNotes(this)" title="Generate active-recall flashcards">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3H8"/></svg>
+          Flashcards
+        </button>
+        <button class="msg-action-btn" onclick="ChatController.diagramFromNotes(this)" title="Generate a visual flowchart or mind map">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Mind Map
+        </button>
       `;
       bubble.appendChild(actions);
     }
@@ -250,6 +266,7 @@ const ChatController = {
     }
 
     container.appendChild(row);
+    this.renderMermaid();
     this.scrollToBottom();
   },
 
@@ -368,5 +385,37 @@ const ChatController = {
     const text = aiContent ? aiContent.innerText : "";
     window.App?.switchView("quiz");
     QuizController.launchFromContext("Notes Review", text.slice(0, 5000));
+  },
+
+  flashcardsFromNotes(btn) {
+    const bubble = btn.closest(".msg-bubble");
+    const aiContent = bubble?.querySelector(".ai-content");
+    const text = aiContent ? aiContent.innerText : "";
+    window.App?.switchView("flashcards");
+    FlashcardsController.launchFromNotes("Notes Flashcards", text.slice(0, 6000));
+  },
+
+  diagramFromNotes(btn) {
+    const bubble = btn.closest(".msg-bubble");
+    const aiContent = bubble?.querySelector(".ai-content");
+    const text = aiContent ? aiContent.innerText : "";
+    const prompt = `Create a clean Mermaid.js visual diagram or concept mind map for the following study material. Use \`\`\`mermaid\n...\n\`\`\` block:\n\n${text.slice(0, 3000)}`;
+    const input = document.getElementById("chatInput");
+    if (input) {
+      input.value = "Create a Mermaid flowchart / mind map visualizing these core concepts";
+      ChatController.handleSubmit();
+    }
+  },
+
+  renderMermaid() {
+    if (typeof mermaid !== "undefined") {
+      try {
+        mermaid.run({
+          querySelector: '.mermaid'
+        });
+      } catch (e) {
+        console.warn("Mermaid render warning:", e);
+      }
+    }
   }
 };

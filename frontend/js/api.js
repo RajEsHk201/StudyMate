@@ -160,5 +160,33 @@ const API = {
 
   getStats(userEmail) {
     return this.request(`/api/analytics/stats?user_email=${encodeURIComponent(userEmail)}`);
+  },
+
+  // AI Study Planner
+  generateStudyPlan(examTarget, examDate, subjects, hoursPerDay, userEmail) {
+    return this.request("/api/study/plan", {
+      method: "POST",
+      body: JSON.stringify({
+        exam_target: examTarget,
+        exam_date: examDate,
+        subjects,
+        hours_per_day: hoursPerDay,
+        user_email: userEmail
+      })
+    });
+  },
+
+  // AI Practice Exam / Mock Paper
+  generateMockExam(topic, examType, durationMinutes, userEmail, context) {
+    return this.request("/api/study/mock-exam", {
+      method: "POST",
+      body: JSON.stringify({
+        topic,
+        exam_type: examType,
+        duration_minutes: durationMinutes,
+        user_email: userEmail,
+        context
+      })
+    });
   }
 };

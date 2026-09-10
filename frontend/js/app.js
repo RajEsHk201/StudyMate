@@ -19,6 +19,8 @@ const App = {
     ProfileManager.init();
     ChatController.init();
     QuizController.init();
+    FlashcardsController.init();
+    PlannerController.init();
     FocusTimer.init();
 
     this.loadSessions();
@@ -99,12 +101,18 @@ const App = {
     if (activeTitle) {
       const titles = {
         chat: "Tutor & Study Notes",
-        quiz: "Active Recall Quizzes"
+        quiz: "Active Recall Quizzes",
+        flashcards: "Spaced Repetition Flashcards",
+        planner: "AI Study Planner & Mock Exams"
       };
       activeTitle.textContent = titles[viewName] || "StudyMate AI";
     }
 
-
+    if (viewName === "flashcards") {
+      FlashcardsController.showDeckLibrary();
+    } else if (viewName === "planner") {
+      PlannerController.updateCountdown();
+    }
   },
 
   /* ----------------- Sessions ----------------- */
@@ -251,6 +259,8 @@ window.App = App;
 window.ProfileManager = ProfileManager;
 window.ChatController = ChatController;
 window.QuizController = QuizController;
+window.FlashcardsController = FlashcardsController;
+window.PlannerController = PlannerController;
 window.FocusTimer = FocusTimer;
 
 document.addEventListener("DOMContentLoaded", () => {
