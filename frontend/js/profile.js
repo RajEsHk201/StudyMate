@@ -109,6 +109,8 @@ const ProfileManager = {
       localStorage.setItem("studymate_user", JSON.stringify(this.currentUser));
       this.updateUI(this.currentUser);
       this.closeProfileModal();
+      window.App?.loadSessions();
+      window.App?.loadStats();
       window.App?.showToast("Personal tutor profile updated!");
     } catch (err) {
       alert("Error saving profile: " + err.message);

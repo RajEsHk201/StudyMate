@@ -367,43 +367,6 @@
 
     <!-- ================= WIDGETS & MODALS ================= -->
 
-    <!-- 1. Floating Focus Timer FAB & Popup -->
-    <div class="focus-timer-dock" id="focusTimerDock">
-        <div class="timer-panel-popup" id="timerPopupPanel">
-            <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
-                <span
-                    style="font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; color:var(--accent-primary);">Deep
-                    Focus Session</span>
-                <button class="close-modal-btn" id="closeTimerPanel" style="font-size:16px;">×</button>
-            </div>
-
-            <div class="timer-digits-display" id="timerDisplayDigits">25:00</div>
-
-            <input type="text" id="timerSubjectInput" class="timer-subject-input"
-                placeholder="Subject (e.g. Algorithms, Biology)">
-
-            <select id="timerDurationSelect" class="quiz-select" style="width:100%; padding:6px 10px; font-size:12px;">
-                <option value="15">15 Minutes (Short Sprint)</option>
-                <option value="25" selected>25 Minutes (Standard Pomodoro)</option>
-                <option value="45">45 Minutes (Deep Work)</option>
-                <option value="60">60 Minutes (Intensive Review)</option>
-            </select>
-
-            <div class="timer-controls-group">
-                <button class="timer-action-btn start" id="timerToggleBtn">Start</button>
-                <button class="timer-action-btn reset" id="timerResetBtn">Reset</button>
-            </div>
-        </div>
-
-        <button class="timer-fab" id="timerFab" title="Focus Timer">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <polyline points="12 6 12 12 16 14" />
-            </svg>
-        </button>
-    </div>
-
     <!-- 2. Personalization & Profile Modal -->
     <div class="modal-overlay" id="profileModal">
         <div class="modal-content-card">

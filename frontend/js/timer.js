@@ -212,6 +212,7 @@ const FocusTimer = {
     // Log focus session to SQLite backend
     try {
       await API.logFocus(userEmail, subject, durationMins);
+      window.App?.loadStats();
       window.App?.showToast(`🎉 Focus complete! ${durationMins}m on "${subject}" logged.`);
     } catch (e) {
       console.warn("Could not log focus session:", e);

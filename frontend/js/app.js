@@ -22,6 +22,7 @@ const App = {
     FocusTimer.init();
 
     this.loadSessions();
+    this.loadStats();
   },
 
   bindEvents() {
@@ -200,7 +201,23 @@ const App = {
     }
   },
 
+  async loadStats() {
+    const userEmail = ProfileManager.currentUser?.email;
+    try {
+      const stats = await API.getStats(userEmail);
+      const streakEl = document.getElementById("studyStreakVal");
+      const focusEl = document.getElementById("todayFocusMinsVal");
 
+      if (streakEl && stats.study_streak !== undefined) {
+        streakEl.textContent = `${stats.study_streak} Day${stats.study_streak === 1 ? '' : 's'} Streak`;
+      }
+      if (focusEl && stats.today_focus_mins !== undefined) {
+        focusEl.textContent = `${stats.today_focus_mins}m`;
+      }
+    } catch (e) {
+      console.warn("Could not load study stats:", e);
+    }
+  },
 
   showToast(message) {
     let toast = document.getElementById("appToast");
