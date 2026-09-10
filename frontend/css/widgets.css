@@ -37,8 +37,15 @@
 }
 
 @keyframes scaleUp {
-  from { transform: scale(0.97); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from {
+    transform: scale(0.97);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .modal-header {
@@ -84,7 +91,8 @@
   color: var(--text);
 }
 
-.form-group input, .form-group select {
+.form-group input,
+.form-group select {
   padding: 11px 13px;
   border-radius: 9px;
   border: 1px solid var(--border);
@@ -94,7 +102,8 @@
   outline: none;
 }
 
-.form-group input:focus, .form-group select:focus {
+.form-group input:focus,
+.form-group select:focus {
   border-color: #888;
 }
 
@@ -335,19 +344,31 @@
 }
 
 @keyframes blinkDot {
-  from { opacity: 0.4; }
-  to { opacity: 1; }
+  from {
+    opacity: 0.4;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 4px 16px rgba(0,0,0,0.25); }
-  50% { box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+
+  0%,
+  100% {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  }
+
+  50% {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  }
 }
 
 /* ==========================================================================
    SPACED REPETITION FLASHCARDS (3D FLIP STUDIO)
    ========================================================================== */
-.flashcards-view, .planner-view {
+.flashcards-view {
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -355,7 +376,7 @@
   padding: 24px 20px;
 }
 
-.flashcards-wrapper, .planner-wrapper {
+.flashcards-wrapper {
   max-width: 780px;
   width: 100%;
   margin: 0 auto;
@@ -658,14 +679,17 @@
   background: var(--accent-coral-soft);
   border-color: var(--accent-coral);
 }
+
 .srs-rate-btn.rate-hard:hover {
   background: var(--accent-amber-soft);
   border-color: var(--accent-amber);
 }
+
 .srs-rate-btn.rate-good:hover {
   background: var(--accent-emerald-soft);
   border-color: var(--accent-emerald);
 }
+
 .srs-rate-btn.rate-easy:hover {
   background: var(--accent-primary-soft);
   border-color: var(--text);
@@ -683,218 +707,4 @@
   border-radius: 4px;
   font-family: var(--font-mono);
   font-size: 10.5px;
-}
-
-/* ==========================================================================
-   AI STUDY PLANNER & EXAM ROADMAP
-   ========================================================================== */
-.planner-countdown-card {
-  background: var(--dark);
-  color: var(--inverse);
-  border-radius: 18px;
-  padding: 28px 24px;
-  text-align: center;
-  box-shadow: var(--shadow-md);
-}
-
-.countdown-badge {
-  font-size: 11.5px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  opacity: 0.8;
-}
-
-.planner-countdown-card h2 {
-  font-size: 20px;
-  font-weight: 800;
-  margin-top: 4px;
-}
-
-.countdown-time-digits {
-  font-size: 48px;
-  font-weight: 800;
-  letter-spacing: -1.5px;
-  line-height: 1.1;
-  margin: 12px 0 6px;
-  font-variant-numeric: tabular-nums;
-}
-
-.planner-phase-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 12px;
-}
-
-.phase-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.phase-badge {
-  font-size: 11px;
-  font-weight: 800;
-  background: var(--dark);
-  color: var(--inverse);
-  padding: 4px 10px;
-  border-radius: 20px;
-}
-
-.phase-header h4 {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.phase-focus {
-  font-size: 13px;
-  color: var(--text-muted);
-}
-
-.milestones-checklist {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.milestone-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  font-size: 13px;
-  color: var(--text);
-  cursor: pointer;
-}
-
-.milestone-item input {
-  margin-top: 3px;
-  cursor: pointer;
-}
-
-.milestone-item.completed span {
-  text-decoration: line-through;
-  opacity: 0.5;
-}
-
-.phase-recall-box {
-  background: var(--soft);
-  border-radius: 10px;
-  padding: 10px 14px;
-  font-size: 12.5px;
-  color: var(--text);
-}
-
-.planner-tip-pill {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 10px 14px;
-  font-size: 13px;
-  color: var(--text);
-  margin-bottom: 8px;
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-}
-
-/* ==========================================================================
-   AI PRACTICE EXAM & MOCK PAPERS
-   ========================================================================== */
-.mock-paper-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 24px;
-}
-
-.paper-actions-bar {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--border);
-}
-
-.mock-paper-sheet {
-  background: var(--bg);
-  padding: 28px;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  font-size: 14.5px;
-  line-height: 1.65;
-  color: var(--text);
-}
-
-.mock-paper-sheet h1 {
-  font-size: 22px;
-  font-weight: 800;
-  margin-bottom: 12px;
-}
-
-.mock-paper-sheet h3 {
-  font-size: 16px;
-  font-weight: 800;
-  margin-top: 24px;
-  margin-bottom: 10px;
-}
-
-.mock-paper-sheet hr {
-  border: none;
-  border-top: 1px solid var(--border);
-  margin: 18px 0;
-}
-
-/* Mermaid Concept Mind Map Containers */
-.mermaid-diagram-wrap {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  margin: 14px 0;
-  overflow-x: auto;
-  box-shadow: var(--shadow-sm);
-}
-
-.mermaid-diagram-header {
-  padding: 8px 14px;
-  background: var(--soft);
-  border-bottom: 1px solid var(--border);
-  font-size: 12px;
-  font-weight: 800;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.mermaid-diagram-wrap pre.mermaid {
-  padding: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 120px;
-  font-family: inherit;
-}
-
-/* Clean Print Styling for Mock Papers */
-@media print {
-  .sidebar, .topbar, .paper-actions-bar, .focus-timer-dock, .mini-timer-pill {
-    display: none !important;
-  }
-  body, .app-layout, .main-stage, .planner-view, .mock-paper-card {
-    height: auto !important;
-    overflow: visible !important;
-    background: #fff !important;
-    color: #000 !important;
-    padding: 0 !important;
-    margin: 0 !important;
-  }
-  .mock-paper-sheet {
-    border: none !important;
-    padding: 0 !important;
-  }
-}
+}

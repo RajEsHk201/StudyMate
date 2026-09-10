@@ -20,7 +20,6 @@ const App = {
     ChatController.init();
     QuizController.init();
     FlashcardsController.init();
-    PlannerController.init();
     FocusTimer.init();
 
     this.loadSessions();
@@ -102,16 +101,13 @@ const App = {
       const titles = {
         chat: "Tutor & Study Notes",
         quiz: "Active Recall Quizzes",
-        flashcards: "Spaced Repetition Flashcards",
-        planner: "AI Study Planner & Mock Exams"
+        flashcards: "Flashcards"
       };
       activeTitle.textContent = titles[viewName] || "StudyMate AI";
     }
 
     if (viewName === "flashcards") {
       FlashcardsController.showDeckLibrary();
-    } else if (viewName === "planner") {
-      PlannerController.updateCountdown();
     }
   },
 
@@ -195,7 +191,7 @@ const App = {
   },
 
   async deleteSession(sessionId) {
-    if (!confirm("Delete this study session?")) return;
+    if (!confirm("Are you sure you want to delete this study session?")) return;
     try {
       await API.deleteSession(sessionId);
       if (ChatController.activeSessionId === sessionId) {
@@ -260,7 +256,6 @@ window.ProfileManager = ProfileManager;
 window.ChatController = ChatController;
 window.QuizController = QuizController;
 window.FlashcardsController = FlashcardsController;
-window.PlannerController = PlannerController;
 window.FocusTimer = FocusTimer;
 
 document.addEventListener("DOMContentLoaded", () => {

@@ -17,16 +17,6 @@
     <link rel="stylesheet" href="/css/chat.css">
     <link rel="stylesheet" href="/css/quiz.css">
     <link rel="stylesheet" href="/css/widgets.css">
-
-    <!-- Mermaid.js for Visual Flowcharts & Mind Maps -->
-    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            if (typeof mermaid !== "undefined") {
-                mermaid.initialize({ startOnLoad: false, theme: 'neutral', securityLevel: 'loose' });
-            }
-        });
-    </script>
 </head>
 
 <body>
@@ -77,18 +67,7 @@
                         <rect x="2" y="7" width="20" height="14" rx="2" />
                         <path d="M16 3H8" />
                     </svg>
-                    <span>SRS Flashcards</span>
-                </button>
-
-                <button class="nav-item" data-view="planner">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                        <line x1="16" y1="2" x2="16" y2="6" />
-                        <line x1="8" y1="2" x2="8" y2="6" />
-                        <line x1="3" y1="10" x2="21" y2="10" />
-                    </svg>
-                    <span>Study Planner & Mocks</span>
+                    <span>Flashcards</span>
                 </button>
 
                 <button class="nav-item" id="vaultTriggerBtn">
@@ -198,24 +177,27 @@
                                     <span>Break down complex ideas with the Feynman technique</span>
                                 </div>
                                 <div class="starter-card"
-                                    onclick="ChatController.appendMessage('user', 'Create high-yield exam preparation notes on Dynamic Programming'); ChatController.handleSubmit();">
-                                    <strong>📝 Exam-Ready Notes</strong>
-                                    <span>Structured definitions, formulas, and common exam traps</span>
-                                </div>
-                                <div class="starter-card" onclick="App.switchView('quiz')">
-                                    <strong>🧪 Interactive Quiz</strong>
-                                    <span>Test active recall with instant feedback & explanations</span>
+                                    onclick="ChatController.appendMessage('user', 'Create high-yield revision notes on Photosynthesis Light Reactions'); ChatController.handleSubmit();">
+                                    <strong>📝 Structured Study Notes</strong>
+                                    <span>Generate exam-ready structured summaries & formulas</span>
                                 </div>
                                 <div class="starter-card"
-                                    onclick="ChatController.appendMessage('user', 'Summarize and compare the key differences between these two concepts'); ChatController.handleSubmit();">
-                                    <strong>🔍 Compare & Contrast</strong>
-                                    <span>Build deep understanding by comparing related concepts side-by-side</span>
+                                    onclick="ChatController.appendMessage('user', 'Give me 5 challenging conceptual questions on Operating Systems Deadlocks'); ChatController.handleSubmit();">
+                                    <strong>❓ Exam Practice Questions</strong>
+                                    <span>Sharpen active recall with realistic problem scenarios</span>
+                                </div>
+                                <div class="starter-card"
+                                    onclick="ChatController.appendMessage('user', 'What are the top 3 common exam traps students make in Probability & Bayes Theorem?'); ChatController.handleSubmit();">
+                                    <strong>⚠️ Exam Pitfalls & Traps</strong>
+                                    <span>Learn the most frequent mistakes examiners test for</span>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Messages List -->
-                        <div id="chatMessagesList" style="display:flex; flex-direction:column; gap:20px;"></div>
+                        <!-- Messages Stream -->
+                        <div class="chat-messages-list" id="chatMessagesList">
+                            <!-- Populated dynamically by chat.js -->
+                        </div>
 
                     </div>
                 </div>
@@ -274,15 +256,10 @@
 
                     <!-- Quick Prompts Pill Bar -->
                     <div class="quick-prompts-bar">
-                        <button class="quick-pill" data-prompt="Explain this topic step-by-step">Step-by-step
-                            breakdown</button>
-                        <button class="quick-pill" data-prompt="Give me 3 common exam pitfalls for this topic">Exam
-                            pitfalls & traps</button>
-                        <button class="quick-pill"
-                            data-prompt="Create a quick cheat sheet with key formulas and definitions">Formula cheat
-                            sheet</button>
-                        <button class="quick-pill" data-prompt="Give me 2 real-world application examples">Real-world
-                            applications</button>
+                        <button class="quick-pill" data-prompt="Explain this topic step-by-step with clear examples">Step-by-step breakdown</button>
+                        <button class="quick-pill" data-prompt="Give me 3 common exam pitfalls and mistakes for this topic">Exam pitfalls & traps</button>
+                        <button class="quick-pill" data-prompt="Create a quick cheat sheet with key formulas and definitions">Formula cheat sheet</button>
+                        <button class="quick-pill" data-prompt="Provide a concise summary of the core concepts for rapid review">Quick Summary</button>
                     </div>
                 </div>
             </section>
@@ -385,7 +362,9 @@
 
                     </div>
                 </div>
-            <!-- ================= VIEW 3: SPACED REPETITION FLASHCARDS ================= -->
+            </section>
+
+            <!-- ================= VIEW 3: FLASHCARDS ================= -->
             <section class="view-container" id="flashcardsView">
                 <div class="flashcards-view">
                     <div class="flashcards-wrapper">
@@ -395,19 +374,19 @@
                             <!-- Deck Creator Card -->
                             <div class="deck-creator-card">
                                 <div class="creator-header">
-                                    <h2>🎴 Spaced Repetition Flashcard Studio</h2>
-                                    <p>SuperMemo SM-2 memory retention engine. Automatically schedules cards at optimal intervals based on your active recall performance.</p>
+                                    <h2>🎴 Flashcards</h2>
+                                    <p>Create AI-powered flashcards on any topic. Cards are automatically scheduled so you review them at the right time.</p>
                                 </div>
 
                                 <div class="quiz-options-row" style="margin-top: 14px;">
                                     <div class="quiz-form-group" style="flex: 2;">
-                                        <label for="deckTopicInput">Deck Subject or Concept</label>
+                                        <label for="deckTopicInput">Topic</label>
                                         <input type="text" id="deckTopicInput" class="quiz-input"
-                                            placeholder="e.g. Operating Systems Deadlocks, Organic Chemistry Reagents...">
+                                            placeholder="e.g. Photosynthesis, World War 2, Newton's Laws...">
                                     </div>
 
                                     <div class="quiz-form-group" style="flex: 1;">
-                                        <label for="deckCountSelect">Number of Cards</label>
+                                        <label for="deckCountSelect">Cards</label>
                                         <select id="deckCountSelect" class="quiz-select">
                                             <option value="6">6 Flashcards</option>
                                             <option value="10" selected>10 Flashcards</option>
@@ -417,13 +396,13 @@
                                 </div>
 
                                 <button class="btn-primary" id="createDeckBtn" style="margin-top: 12px;">
-                                    <span>Generate Active-Recall Deck with AI</span>
+                                    <span>✨ Generate Flashcards</span>
                                 </button>
                             </div>
 
                             <!-- Decks Grid -->
                             <div class="deck-library-header">
-                                <h3>Saved Flashcard Decks</h3>
+                                <h3>Your Decks</h3>
                             </div>
                             <div class="deck-grid" id="deckLibraryGrid">
                                 <!-- Populated dynamically by flashcards.js -->
@@ -435,7 +414,8 @@
                             <div class="stage-topbar">
                                 <button class="btn-secondary back-btn" id="backToDecksBtn">← Back to Decks</button>
                                 <h3 id="activeDeckTitle">Deck Title</h3>
-                                <button class="btn-secondary export-btn" id="exportAnkiBtn" title="Download ready-to-import Anki CSV">
+                                <button class="btn-secondary export-btn" id="exportAnkiBtn"
+                                    title="Download ready-to-import Anki CSV">
                                     📥 Export Anki
                                 </button>
                             </div>
@@ -447,7 +427,7 @@
                                 </div>
                                 <div style="display:flex; justify-content:space-between; margin-top:4px;">
                                     <span class="progress-label" id="deckProgressText">Card 1 of 10</span>
-                                    <span class="progress-label" id="cardIntervalBadge">New Card</span>
+                                    <span class="progress-label" id="cardIntervalBadge">New</span>
                                 </div>
                             </div>
 
@@ -458,51 +438,51 @@
                                     <div class="flashcard-face flashcard-front">
                                         <span class="card-badge" id="cardTagBadge">Concept</span>
                                         <div class="card-text" id="cardFrontText">Front text...</div>
-                                        <div class="card-hint-trigger">
-                                            <span>Click or press <strong>Space</strong> to reveal answer</span>
-                                            <button type="button" class="hint-pill-btn" id="cardHintBtn">💡 Hint</button>
+                                        <div class="card-flip-prompt">
+                                            <span>Tap or press <strong>Space</strong> to see answer</span>
                                         </div>
                                     </div>
 
                                     <!-- BACK -->
                                     <div class="flashcard-face flashcard-back">
-                                        <span class="card-badge" style="background:var(--accent-primary-soft); color:var(--text-main);">Answer & Breakdown</span>
+                                        <span class="card-badge"
+                                            style="background:var(--accent-primary-soft); color:var(--text);">Answer</span>
                                         <div class="card-text" id="cardBackText">Back text...</div>
-                                        <div class="card-hint-box hidden" id="cardHintBox">
-                                            <strong>💡 Mnemonic / Clue:</strong>
-                                            <span id="cardHintText"></span>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- SRS Rating Toolbar -->
                             <div class="srs-actions-card">
-                                <div class="srs-label">How well did you recall this concept?</div>
+                                <div class="srs-label">How well did you remember this?</div>
                                 <div class="srs-button-group">
-                                    <button class="srs-rate-btn rate-again" data-quality="0" title="Forgot / Blackout (Keyboard: 1 or A)">
+                                    <button class="srs-rate-btn rate-again" data-quality="0"
+                                        title="Didn't remember (Press 1)">
                                         <span class="rate-icon">🔄</span>
                                         <span class="rate-name">Again</span>
-                                        <span class="rate-time">&lt; 1 min</span>
+                                        <span class="rate-time">Soon</span>
                                     </button>
-                                    <button class="srs-rate-btn rate-hard" data-quality="3" title="Recalled with high effort (Keyboard: 2 or H)">
+                                    <button class="srs-rate-btn rate-hard" data-quality="3"
+                                        title="Barely remembered (Press 2)">
                                         <span class="rate-icon">⚡</span>
                                         <span class="rate-name">Hard</span>
                                         <span class="rate-time">1 day</span>
                                     </button>
-                                    <button class="srs-rate-btn rate-good" data-quality="4" title="Good recall (Keyboard: 3 or G)">
+                                    <button class="srs-rate-btn rate-good" data-quality="4"
+                                        title="Remembered well (Press 3)">
                                         <span class="rate-icon">👍</span>
                                         <span class="rate-name">Good</span>
-                                        <span class="rate-time">6 days</span>
+                                        <span class="rate-time">Few days</span>
                                     </button>
-                                    <button class="srs-rate-btn rate-easy" data-quality="5" title="Instant / Perfect recall (Keyboard: 4 or E)">
+                                    <button class="srs-rate-btn rate-easy" data-quality="5"
+                                        title="Knew it instantly (Press 4)">
                                         <span class="rate-icon">🌟</span>
                                         <span class="rate-name">Easy</span>
-                                        <span class="rate-time">4+ days</span>
+                                        <span class="rate-time">1 week+</span>
                                     </button>
                                 </div>
                                 <div class="keyboard-shortcuts-strip">
-                                    <span>⌨️ Keyboard: <code>Space</code> Flip • <code>1-4</code> Rate • <code>H</code> Hint</span>
+                                    <span>⌨️ <code>Space</code> Flip · <code>1-4</code> Rate</span>
                                 </div>
                             </div>
                         </div>
@@ -513,128 +493,12 @@
                                 <div>🎴</div>
                                 <span>Done</span>
                             </div>
-                            <h2 class="score-headline">Spaced Repetition Review Complete!</h2>
+                            <h2 class="score-headline">Review Complete! 🎉</h2>
                             <p class="score-summary-p">
-                                Great work on active recall! StudyMate's SM-2 algorithm has updated your memory intervals for these cards.
+                                Nice work! Your review schedule has been updated so you see each card at the best time.
                             </p>
                             <div class="scorecard-actions">
-                                <button class="btn-primary" onclick="FlashcardsController.showDeckLibrary()">Back to Deck Library</button>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </section>
-
-            <!-- ================= VIEW 4: AI STUDY PLANNER & MOCK EXAMS ================= -->
-            <section class="view-container" id="plannerView">
-                <div class="planner-view">
-                    <div class="planner-wrapper">
-
-                        <!-- Live Countdown Card -->
-                        <div class="planner-countdown-card">
-                            <div class="countdown-content">
-                                <span class="countdown-badge">⏳ Live Exam Countdown</span>
-                                <h2 id="plannerExamTitle">Final Exams</h2>
-                                <div class="countdown-time-digits" id="plannerCountdownVal">45 Days</div>
-                                <p id="plannerCountdownSub">Calculating remaining study runway...</p>
-                            </div>
-                        </div>
-
-                        <!-- Phased Roadmap Generator & Display -->
-                        <div class="quiz-launcher-card" style="margin-top: 10px;">
-                            <div class="launcher-header">
-                                <h2>📅 AI Revision Roadmap & Phased Milestones</h2>
-                                <p>Generate a customized, multi-week study timeline tailored to your target exam date, major, and daily study capacity.</p>
-                            </div>
-
-                            <div class="quiz-options-row">
-                                <div class="quiz-form-group" style="flex: 1.5;">
-                                    <label for="planTargetInput">Target Exam / Goal</label>
-                                    <input type="text" id="planTargetInput" class="quiz-input" placeholder="e.g. Semester Finals, MCAT, GRE, Midterms">
-                                </div>
-                                <div class="quiz-form-group" style="flex: 1;">
-                                    <label for="planDateInput">Exam Date</label>
-                                    <input type="date" id="planDateInput" class="quiz-input">
-                                </div>
-                            </div>
-
-                            <div class="quiz-options-row">
-                                <div class="quiz-form-group" style="flex: 2;">
-                                    <label for="planSubjectsInput">Key Syllabus / High-Yield Topics</label>
-                                    <input type="text" id="planSubjectsInput" class="quiz-input" placeholder="e.g. Algorithms, Data Structures, System Design">
-                                </div>
-                                <div class="quiz-form-group" style="flex: 1;">
-                                    <label for="planHoursSelect">Daily Study Time</label>
-                                    <select id="planHoursSelect" class="quiz-select">
-                                        <option value="2">2 Hours / Day</option>
-                                        <option value="3" selected>3 Hours / Day</option>
-                                        <option value="5">5 Hours / Day (Intensive)</option>
-                                        <option value="7">7+ Hours / Day (Cramming)</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <button class="btn-primary" id="generatePlanBtn">
-                                <span>Generate Phased AI Study Plan</span>
-                            </button>
-                        </div>
-
-                        <!-- Generated Plan Results -->
-                        <div class="planner-roadmap-container" id="plannerResultsArea">
-                            <h3 id="planHeadline" style="font-size:18px; font-weight:800; margin-top:10px;">Personalized Revision Roadmap</h3>
-                            <p id="planDailyStrategy" style="font-size:13.5px; color:var(--text-muted); line-height:1.5; margin-top:4px;"></p>
-
-                            <div class="phases-grid" id="planPhasesContainer">
-                                <!-- Populated dynamically by planner.js -->
-                            </div>
-
-                            <div class="high-yield-tips-wrap" style="margin-top: 14px;">
-                                <h4 style="font-size:14px; font-weight:700; margin-bottom:8px;">💡 High-Yield Retention Strategies</h4>
-                                <div class="tips-grid" id="planTipsList">
-                                    <!-- Populated dynamically -->
-                                </div>
-                            </div>
-                        </div>
-
-                        <hr style="border:none; border-top:1px solid var(--border); margin: 24px 0;">
-
-                        <!-- Mock Exam Paper Generator Section -->
-                        <div class="quiz-launcher-card" id="mockExamLauncher">
-                            <div class="launcher-header">
-                                <h2>📑 AI Practice Exam & Mock Paper Generator</h2>
-                                <p>Generate full, rigorous mock examination papers (Section A: MCQs, Section B: Conceptual Short Answers, Section C: Deep Application Problems + Complete Model Solutions) ready to print or export as PDF.</p>
-                            </div>
-
-                            <div class="quiz-options-row">
-                                <div class="quiz-form-group" style="flex: 2;">
-                                    <label for="mockExamTopicInput">Exam Subject / Topic</label>
-                                    <input type="text" id="mockExamTopicInput" class="quiz-input" placeholder="e.g. Distributed Systems, Molecular Genetics, Macroeconomics">
-                                </div>
-                                <div class="quiz-form-group" style="flex: 1;">
-                                    <label for="mockExamDurationSelect">Time Allowed</label>
-                                    <select id="mockExamDurationSelect" class="quiz-select">
-                                        <option value="45">45 Minutes (Quick Test)</option>
-                                        <option value="60" selected>60 Minutes (Standard)</option>
-                                        <option value="90">90 Minutes (Comprehensive)</option>
-                                        <option value="120">120 Minutes (Full Exam)</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <button class="btn-primary" id="generateMockExamBtn">
-                                <span>Generate Complete Mock Exam Paper</span>
-                            </button>
-                        </div>
-
-                        <!-- Printable Mock Exam Paper View -->
-                        <div class="mock-paper-card hidden" id="mockExamPaperContainer">
-                            <div class="paper-actions-bar">
-                                <button class="btn-secondary" id="newMockExamBtn">← Generate Another Paper</button>
-                                <button class="btn-primary" id="printMockExamBtn">🖨️ Print / Save as PDF</button>
-                            </div>
-                            <div class="mock-paper-sheet printable-content" id="mockExamPaperBody">
-                                <!-- Rendered exam markdown -->
+                                <button class="btn-primary" onclick="FlashcardsController.showDeckLibrary()">Back to Decks</button>
                             </div>
                         </div>
 
@@ -647,7 +511,7 @@
 
     <!-- ================= WIDGETS & MODALS ================= -->
 
-    <!-- 2. Personalization & Profile Modal -->
+    <!-- Personalization & Profile Modal -->
     <div class="modal-overlay" id="profileModal">
         <div class="modal-content-card">
             <div class="modal-header">
@@ -655,8 +519,7 @@
                 <button class="close-modal-btn" id="closeProfileModal">×</button>
             </div>
             <p style="font-size:13px; color:var(--text-muted); margin-top:-10px;">
-                StudyMate AI personalizes explanations, rigor, and analogies to match your exact academic level and
-                learning persona.
+                StudyMate AI personalizes explanations, rigor, and analogies to match your exact academic level and learning persona.
             </p>
 
             <form id="profileForm" class="profile-form-grid">
@@ -704,26 +567,19 @@
                 <div class="form-group">
                     <label for="profileStyleSelect">Preferred Learning Style</label>
                     <select id="profileStyleSelect">
-                        <option value="Intuitive & Visual" selected>Intuitive & Visual (Feynman analogies & diagrams)
-                        </option>
-                        <option value="Rigorous & Academic">Rigorous & Academic (Formal proofs & scholarly definitions)
-                        </option>
-                        <option value="Step-by-Step Problem Solving">Step-by-Step Problem Solving (Formulas & worked
-                            examples)</option>
-                        <option value="High-Yield Exam Cramming">High-Yield Exam Cramming (Bullet points & exam traps)
-                        </option>
+                        <option value="Intuitive & Visual" selected>Intuitive & Visual (Feynman analogies & diagrams)</option>
+                        <option value="Rigorous & Academic">Rigorous & Academic (Formal proofs & scholarly definitions)</option>
+                        <option value="Step-by-Step Problem Solving">Step-by-Step Problem Solving (Formulas & worked examples)</option>
+                        <option value="High-Yield Exam Cramming">High-Yield Exam Cramming (Bullet points & exam traps)</option>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label for="profilePersonaSelect">AI Tutor Persona</label>
                     <select id="profilePersonaSelect">
-                        <option value="Explanatory Tutor" selected>Explanatory Tutor (Clear, patient, structured
-                            breakdowns)</option>
-                        <option value="Socratic Mentor">Socratic Mentor (Guides with hints, doesn't give away answers)
-                        </option>
-                        <option value="Strict Exam Grader">Strict Exam Grader (Rigorous examiner grading mark schemes)
-                        </option>
+                        <option value="Explanatory Tutor" selected>Explanatory Tutor (Clear, patient, structured breakdowns)</option>
+                        <option value="Socratic Mentor">Socratic Mentor (Guides with hints, doesn't give away answers)</option>
+                        <option value="Strict Exam Grader">Strict Exam Grader (Rigorous examiner grading mark schemes)</option>
                     </select>
                 </div>
 
@@ -732,7 +588,7 @@
         </div>
     </div>
 
-    <!-- 3. New Session Type Modal -->
+    <!-- New Session Type Modal -->
     <div class="modal-overlay" id="newSessionModal">
         <div class="modal-content-card">
             <div class="modal-header">
@@ -764,7 +620,7 @@
         </div>
     </div>
 
-    <!-- 4. Slide-over Mistake Vault Drawer -->
+    <!-- Slide-over Mistake Vault Drawer -->
     <div class="vault-drawer" id="vaultDrawer">
         <div class="vault-header">
             <h3>
@@ -773,15 +629,14 @@
             <button class="close-modal-btn" id="closeVaultBtn">×</button>
         </div>
         <p style="padding: 12px 20px 0; font-size:12px; color:var(--text-muted);">
-            Concepts and questions you missed during active recall quizzes. StudyMate injects these during revision
-            sessions to close learning gaps.
+            Concepts and questions you missed during active recall quizzes. StudyMate injects these during revision sessions to close learning gaps.
         </p>
         <div class="vault-list" id="vaultList">
             <!-- Populated dynamically -->
         </div>
     </div>
 
-    <!-- 5. Pomodoro Focus Timer Modal -->
+    <!-- Pomodoro Focus Timer Modal -->
     <div class="modal-overlay" id="focusTimerModal" style="display: none;">
         <div class="modal-content-card timer-modal-card">
             <div class="modal-header" style="width: 100%;">
@@ -806,7 +661,8 @@
             <!-- Subject Tag -->
             <div class="form-group" style="width: 100%; text-align: left; margin-top: 10px;">
                 <label for="timerSubjectInput">Study Focus Subject</label>
-                <input type="text" id="timerSubjectInput" placeholder="e.g. Data Structures, Operating Systems" value="General Study">
+                <input type="text" id="timerSubjectInput" placeholder="e.g. Data Structures, Operating Systems"
+                    value="General Study">
             </div>
 
             <!-- Controls -->
@@ -818,7 +674,8 @@
     </div>
 
     <!-- Floating Mini Timer Pill (visible when timer is ticking in background) -->
-    <div class="mini-timer-pill" id="miniTimerPill" style="display: none;" title="Focus session running - Click to open">
+    <div class="mini-timer-pill" id="miniTimerPill" style="display: none;"
+        title="Focus session running - Click to open">
         <span class="mini-timer-dot"></span>
         <span>⏱️</span>
         <span id="miniTimerVal">25:00</span>
@@ -831,7 +688,6 @@
     <script src="/js/chat.js"></script>
     <script src="/js/quiz.js"></script>
     <script src="/js/flashcards.js"></script>
-    <script src="/js/planner.js"></script>
     <script src="/js/timer.js"></script>
     <script src="/js/app.js"></script>
 

@@ -57,7 +57,7 @@ const FlashcardsController = {
       const view = document.getElementById("flashcardsView");
       const activeStage = document.getElementById("flashcardActiveStage");
       if (!view?.classList.contains("active-view") || activeStage?.classList.contains("hidden")) return;
-      
+
       // Ignore if typing in an input
       if (["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement.tagName)) return;
 

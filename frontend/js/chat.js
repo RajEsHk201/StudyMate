@@ -25,21 +25,13 @@ const ChatController = {
       const renderer = new marked.Renderer();
 
       // Wrap tables in scrollable container
-      renderer.table = function(header, body) {
+      renderer.table = function (header, body) {
         return `<div class="table-wrap"><table><thead>${header}</thead><tbody>${body}</tbody></table></div>`;
       };
 
-      // Code blocks with copy button and language label (or Mermaid diagram)
-      renderer.code = function(code, lang) {
+      // Code blocks with copy button and language label
+      renderer.code = function (code, lang) {
         const language = (lang || "").toLowerCase().trim();
-        if (language === "mermaid") {
-          const id = "mermaid-" + Math.random().toString(36).substring(2, 9);
-          return `<div class="mermaid-diagram-wrap">
-            <div class="mermaid-diagram-header"><span>📊 Concept Diagram / Mind Map</span></div>
-            <pre class="mermaid" id="${id}">${code}</pre>
-          </div>`;
-        }
-
         const langLabel = language ? `<span class="code-lang-label">${language}</span>` : "";
         const escapedCode = code.replace(/</g, "&lt;").replace(/>/g, "&gt;");
         return `<div class="code-block-wrap">
@@ -49,17 +41,17 @@ const ChatController = {
       };
 
       // Inline code
-      renderer.codespan = function(code) {
+      renderer.codespan = function (code) {
         return `<code class="inline-code">${code}</code>`;
       };
 
       // Clean blockquotes
-      renderer.blockquote = function(quote) {
+      renderer.blockquote = function (quote) {
         return `<blockquote class="ai-blockquote">${quote}</blockquote>`;
       };
 
       // Clean list items
-      renderer.listitem = function(text) {
+      renderer.listitem = function (text) {
         return `<li>${text}</li>`;
       };
 
@@ -142,9 +134,10 @@ const ChatController = {
     if (input) input.value = "";
   },
 
-  async handleSubmit() {
+  async handleSubmit(overrideText = null, overrideDisplay = null) {
     const input = document.getElementById("chatInput");
-    const text = input ? input.value.trim() : "";
+    const rawInputText = input ? input.value.trim() : "";
+    const text = overrideText || rawInputText;
     const hasAttachment = Boolean(this.selectedAttachment);
 
     if (!text && !hasAttachment) return;
@@ -152,8 +145,8 @@ const ChatController = {
     const mode = document.getElementById("modeSelect")?.value || "notes";
     const userEmail = ProfileManager.currentUser?.email;
 
-    // Clear input
-    if (input) {
+    // Clear input if submitted via textarea
+    if (input && !overrideText) {
       input.value = "";
       input.style.height = "auto";
     }
@@ -162,9 +155,9 @@ const ChatController = {
     document.getElementById("welcomeHero")?.classList.add("hidden");
 
     // Render user message
-    const userDisplayText = hasAttachment 
-      ? `📎 ${this.selectedAttachment.name}\n\n${text}`
-      : text;
+    const userDisplayText = overrideDisplay || (hasAttachment
+      ? `📎 ${this.selectedAttachment.name}\n\n${rawInputText}`
+      : rawInputText || text);
     this.appendMessage("user", userDisplayText);
 
     // Render loading indicator
@@ -185,7 +178,7 @@ const ChatController = {
         formData.append("user_email", userEmail || "");
 
         const isImage = this.selectedAttachment.type.startsWith("image/");
-        responseData = isImage 
+        responseData = isImage
           ? await API.analyzeImage(formData)
           : await API.analyzeDocument(formData);
 
@@ -199,7 +192,7 @@ const ChatController = {
 
       this.removeThinking(thinkingId);
       this.appendMessage("ai", responseData.result || "No content generated.");
-      
+
       // Refresh session sidebar if newly created
       window.App?.loadSessions();
     } catch (err) {
@@ -249,10 +242,6 @@ const ChatController = {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3H8"/></svg>
           Flashcards
         </button>
-        <button class="msg-action-btn" onclick="ChatController.diagramFromNotes(this)" title="Generate a visual flowchart or mind map">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-          Mind Map
-        </button>
       `;
       bubble.appendChild(actions);
     }
@@ -266,7 +255,6 @@ const ChatController = {
     }
 
     container.appendChild(row);
-    this.renderMermaid();
     this.scrollToBottom();
   },
 
@@ -360,8 +348,8 @@ const ChatController = {
       const origHTML = btn.innerHTML;
       btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!`;
       btn.classList.add("copied");
-      setTimeout(() => { 
-        btn.innerHTML = origHTML; 
+      setTimeout(() => {
+        btn.innerHTML = origHTML;
         btn.classList.remove("copied");
       }, 1600);
     });
@@ -393,29 +381,5 @@ const ChatController = {
     const text = aiContent ? aiContent.innerText : "";
     window.App?.switchView("flashcards");
     FlashcardsController.launchFromNotes("Notes Flashcards", text.slice(0, 6000));
-  },
-
-  diagramFromNotes(btn) {
-    const bubble = btn.closest(".msg-bubble");
-    const aiContent = bubble?.querySelector(".ai-content");
-    const text = aiContent ? aiContent.innerText : "";
-    const prompt = `Create a clean Mermaid.js visual diagram or concept mind map for the following study material. Use \`\`\`mermaid\n...\n\`\`\` block:\n\n${text.slice(0, 3000)}`;
-    const input = document.getElementById("chatInput");
-    if (input) {
-      input.value = "Create a Mermaid flowchart / mind map visualizing these core concepts";
-      ChatController.handleSubmit();
-    }
-  },
-
-  renderMermaid() {
-    if (typeof mermaid !== "undefined") {
-      try {
-        mermaid.run({
-          querySelector: '.mermaid'
-        });
-      } catch (e) {
-        console.warn("Mermaid render warning:", e);
-      }
-    }
   }
 };
